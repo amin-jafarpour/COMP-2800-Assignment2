@@ -20,7 +20,7 @@ const logSchema = new mongoose.Schema({
 });
 const poklogsModel = mongoose.model("poklogs", logSchema);
 
-for(let i = 1; i < 20 ; ++i){
+for(let i = 1; i <= 889 ; ++i){
   https.get(`https://pokeapi.co/api/v2/pokemon/${i}`, (resp) => {
   let data = '';
 

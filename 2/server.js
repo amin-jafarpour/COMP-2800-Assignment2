@@ -32,7 +32,7 @@ app.get('/log/poklogs', function (req, res) {
 })
 
 app.get('/log/poklogs/:id', function (req, res) {
-  poklogsModel.find({"id": req.params.id}, { _id: 0, id: 1, likes: 1, dislikes: 1 }, function (err, logs) {
+  poklogsModel.find({ "id": req.params.id }, { _id: 0, id: 1, likes: 1, dislikes: 1 }, function (err, logs) {
     if (err) {
       console.log("Error " + err);
     } else {
@@ -140,55 +140,63 @@ app.get('/pok/:id', function (req, res) {
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.get('/profile/:id', function (req, res) {
 
-
-  https.get(`https://pokeapi.co/api/v2/pokemon/${req.params.id}`, (resp) => {
-    let data = '';
-
-    // A chunk of data has been received.
-    resp.on('data', (chunk) => {
-      data += chunk;
-    });
-
-    // The whole response has been received. Print out the result.
-    resp.on('end', () => {
-      // console.log(JSON.parse(data).explanation);
-      let properties = JSON.parse(data);
-
+  poksModel.find({ "id": req.params.id }, { _id: 0, id: 1, name: 1, weight: 1, height: 1, species: 1 }, function (err, properties) {
+    if (err) {
+      console.log("Error " + err);
+    } else {
       res.render("profile.ejs", {
-        "id": properties.id,
-        "name": properties.name,
-        "weight": properties.weight,
-        "height": properties.height,
-        "species": properties.species.name
+        "id": properties[0].id,
+        "name": properties[0].name,
+        "weight": properties[0].weight,
+        "height": properties[0].height,
+        "species": properties[0].species
       });
-
-    });
-
-  }).on("error", (err) => {
-    console.log("Error: " + err.message);
-  })
-
+    }
+  });
 });
+
+
+
+
+
+
+
+
+
+
+// app.get('/profile/:id', function (req, res) {
+
+
+//   https.get(`https://pokeapi.co/api/v2/pokemon/${req.params.id}`, (resp) => {
+//     let data = '';
+
+//     // A chunk of data has been received.
+//     resp.on('data', (chunk) => {
+//       data += chunk;
+//     });
+
+//     // The whole response has been received. Print out the result.
+//     resp.on('end', () => {
+//       // console.log(JSON.parse(data).explanation);
+//       let properties = JSON.parse(data);
+
+//       res.render("profile.ejs", {
+//         "id": properties.id,
+//         "name": properties.name,
+//         "weight": properties.weight,
+//         "height": properties.height,
+//         "species": properties.species.name
+//       });
+
+//     });
+
+//   }).on("error", (err) => {
+//     console.log("Error: " + err.message);
+//   })
+
+// });
 
 
 
