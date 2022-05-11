@@ -34,6 +34,14 @@
             height: 150px;
 
         }
+
+        .gird-container{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            width: 15%;
+            margin: auto;
+            grid-auto-rows: 25px;
+        }
     </style>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -113,16 +121,25 @@
 
   
 
-        <div>
-            <label>Likes</label>
-            <label id="numLikes"></label>
+        <div class="gird-container">
+            <div>
+                <label>Likes</label>
+                <label id="numLikes"></label>
+            </div>
+           <div>
             <input type="button" onclick="likes()" value="like">
+           </div>
         </div>
 
-        <div >
-            <label>Dislikes</label>
-            <label id="numDislikes"></label>
-            <input type="button" onclick="dislikes()" value="dislike">
+        <div class="gird-container">
+            <div>
+                <label>Dislikes</label>
+                <label id="numDislikes"></label>
+            </div>
+
+            <div>
+                <input type="button" onclick="dislikes()" value="dislike">
+            </div>
         </div>
 
 
