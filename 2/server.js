@@ -1,0 +1,148 @@
+const express = require('express');
+const { read } = require('fs');
+const https = require('https');
+const bodyparser = require("body-parser");
+const mongoose = require('mongoose');
+const app = express()
+app.set('view engine', 'ejs');
+app.use(express.static('./public'));
+app.use(bodyparser.urlencoded({
+  extended: true
+}));
+
+
+mongoose.connect("mongodb://localhost:27017/log",
+    { useNewUrlParser: true, useUnifiedTopology: true });
+const logSchema = new mongoose.Schema({
+    id: Number,
+    likes: Number,
+    dislikes: Number
+});
+const poklogsModel = mongoose.model("poklogs", logSchema);
+
+app.get('/log/poklogs', function (req, res) {
+  poklogsModel.find({}, {_id: 0, id: 1, likes: 1, dislikes: 1}, function (err, logs) {
+      if (err) {
+          console.log("Error " + err);
+      } else {
+        res.json(logs);
+      }
+      
+  });
+})
+
+
+app.put('/log/insert', function (req, res) {
+  poklogsModel.create({
+      "id": req.query.id,
+      "likes": req.query.likes,
+      "dislikes": req.query.dislikes
+
+  }, function (err, data) {
+      if (err) {
+          console.log("Error " + err);
+      } else {
+        res.send(`inserted ${req.query.id}, ${req.query.likes}, ${req.query.dislikes}`);
+      }
+      
+  });
+})
+
+
+app.get('/log/like/:id', function (req, res) {
+  poklogsModel.updateOne({
+      "id": req.params.id
+  }, {
+      $inc: { "likes": 1 }
+  }, function (err, data) {
+      if (err) {
+          console.log("Error " + err);
+      } else {
+        res.send(`liked ${req.params.id}`);
+      }
+  });
+})
+
+
+app.get('/log/dislike/:id', function (req, res) {
+  poklogsModel.updateOne({
+      "id": req.params.id
+  }, {
+      $inc: { "dislikes": 1 }
+  }, function (err, data) {
+      if (err) {
+          console.log("Error " + err );
+      } else {
+        res.send(`disliked ${req.params.id}`);
+      }
+  });
+})
+
+
+app.get('/log/remove/:id', function (req, res) {
+  poklogsModel.remove({
+      "id": req.params.id
+  }, function (err, data) {
+      if (err) {
+          console.log("Error " + err);
+      } else {
+
+        res.send(`Remove id= ${req.params.id} log record`);
+      }
+      
+  });
+})
+
+app.get('/profile/:id', function (req, res) {
+
+  
+    https.get(`https://pokeapi.co/api/v2/pokemon/${req.params.id}`, (resp) => {
+        let data = '';
+      
+        // A chunk of data has been received.
+        resp.on('data', (chunk) => {
+          data += chunk;
+        });
+      
+        // The whole response has been received. Print out the result.
+        resp.on('end', () => {
+          // console.log(JSON.parse(data).explanation);
+          let properties = JSON.parse(data);
+      
+          res.render("profile.ejs", {
+              "id": properties.id,
+              "name": properties.name,
+              "weight": properties.weight,
+              "height":properties.height,
+              "species": properties.species.name
+          });
+      
+        });
+      
+      }).on("error", (err) => {
+        console.log("Error: " + err.message);
+      })
+
+});
+
+
+
+    
+
+
+    
+
+
+
+
+
+app.listen(5000, function (err) {
+    if (err)
+        console.log(err);
+});
+
+
+
+
+
+   
