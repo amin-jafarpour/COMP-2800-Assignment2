@@ -104,20 +104,20 @@ const pokSchema = new mongoose.Schema({
 });
 const poksModel = mongoose.model("poks", pokSchema);
 
-
-app.get(':id', function (req, res) {
-  poksModel.updateOne({
-      "id": req.params.id
-  }, {
-      $inc: { "likes": 1 }
-  }, function (err, data) {
+app.get('/pok/:id', function (req, res) {
+  poksModel.find({}, {_id: 0, id: 1, name: 1, weight: 1, height: 1, species: 1}, function (err, poks) {
       if (err) {
           console.log("Error " + err);
       } else {
-        res.send(`liked ${req.params.id}`);
+        res.json(poks);
       }
   });
 })
+
+
+
+
+
 
 
 
