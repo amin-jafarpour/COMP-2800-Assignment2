@@ -97,15 +97,15 @@ app.get('/log/remove/:id', function (req, res) {
 
 const pokSchema = new mongoose.Schema({
     "id": Number,
-    "name ": String,
+    "name": String,
     "weight": Number,
     "height": Number, 
-    "species": Number
+    "species": String
 });
 const poksModel = mongoose.model("poks", pokSchema);
 
 app.get('/pok/:id', function (req, res) {
-  poksModel.find({}, {_id: 0, id: 1, name: 1, weight: 1, height: 1, species: 1}, function (err, poks) {
+  poksModel.find({id: req.params.id}, {_id: 0, id: 1, name: 1, weight: 1, height: 1, species: 1}, function (err, poks) {
       if (err) {
           console.log("Error " + err);
       } else {

@@ -6,14 +6,14 @@ mongoose.connect("mongodb://localhost:27017/log",
 
 const pokSchema = new mongoose.Schema({
   "id": Number,
-  "name ": String,
+  "name": String,
   "weight": Number,
   "height": Number,
   "species": String
 });
 const poksModel = mongoose.model("poks", pokSchema);
 
-for(let i = 1; i < 889 ; ++i){
+for(let i = 1; i < 20 ; ++i){
   https.get(`https://pokeapi.co/api/v2/pokemon/${i}`, (resp) => {
   let data = '';
 
@@ -26,6 +26,7 @@ for(let i = 1; i < 889 ; ++i){
   resp.on('end', () => {
     // console.log(JSON.parse(data).explanation);
     let properties = JSON.parse(data);
+    console.log('name: ', properties.name, "species: ", properties.species.name);
     poksModel.create({
       "id": parseInt(properties.id),
       "name": properties.name,
