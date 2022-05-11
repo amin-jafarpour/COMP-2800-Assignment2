@@ -93,6 +93,46 @@ app.get('/log/remove/:id', function (req, res) {
   });
 })
 
+
+
+const pokSchema = new mongoose.Schema({
+    "id": Number,
+    "name ": String,
+    "weight": Number,
+    "height": Number, 
+    "species": Number
+});
+const poksModel = mongoose.model("poks", pokSchema);
+
+
+app.get(':id', function (req, res) {
+  poksModel.updateOne({
+      "id": req.params.id
+  }, {
+      $inc: { "likes": 1 }
+  }, function (err, data) {
+      if (err) {
+          console.log("Error " + err);
+      } else {
+        res.send(`liked ${req.params.id}`);
+      }
+  });
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.get('/profile/:id', function (req, res) {
 
   
