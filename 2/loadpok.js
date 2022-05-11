@@ -13,6 +13,13 @@ const pokSchema = new mongoose.Schema({
 });
 const poksModel = mongoose.model("poks", pokSchema);
 
+const logSchema = new mongoose.Schema({
+  id: Number,
+  likes: Number,
+  dislikes: Number
+});
+const poklogsModel = mongoose.model("poklogs", logSchema);
+
 for(let i = 1; i < 20 ; ++i){
   https.get(`https://pokeapi.co/api/v2/pokemon/${i}`, (resp) => {
   let data = '';
@@ -35,7 +42,17 @@ for(let i = 1; i < 20 ; ++i){
       "species": properties.species.name
 
     }/*, function (err, data) {}*/);
+
+
+    poklogsModel.create({
+      "id": parseInt(properties.id),
+      likes: 0,
+      dislikes: 0
+    });
   });
+
+
+
 
 }).on("error", (err) => {
   console.log("Error: " + err.message);
