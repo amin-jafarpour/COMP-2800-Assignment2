@@ -31,6 +31,17 @@ app.get('/log/poklogs', function (req, res) {
   });
 })
 
+app.get('/log/poklogs/:id', function (req, res) {
+  poklogsModel.find({"id": req.params.id}, { _id: 0, id: 1, likes: 1, dislikes: 1 }, function (err, logs) {
+    if (err) {
+      console.log("Error " + err);
+    } else {
+      res.json(logs);
+    }
+
+  });
+})
+
 
 app.put('/log/insert', function (req, res) {
   poklogsModel.create({
@@ -58,7 +69,7 @@ app.get('/log/like/:id', function (req, res) {
     if (err) {
       console.log("Error " + err);
     } else {
-      poklogsModel.find({'id': req.params.id}, { _id: 0, id: 1, likes: 1}, function (err, logs) {
+      poklogsModel.find({ 'id': req.params.id }, { _id: 0, id: 1, likes: 1 }, function (err, logs) {
         if (err) {
           console.log("Error " + err);
         } else {
@@ -71,7 +82,7 @@ app.get('/log/like/:id', function (req, res) {
 })
 
 
-  app.get('/log/dislike/:id', function (req, res) {
+app.get('/log/dislike/:id', function (req, res) {
   poklogsModel.updateOne({
     "id": req.params.id
   }, {
@@ -80,7 +91,7 @@ app.get('/log/like/:id', function (req, res) {
     if (err) {
       console.log("Error " + err);
     } else {
-      poklogsModel.find({'id': req.params.id}, { _id: 0, id: 1, dislikes: 1}, function (err, logs) {
+      poklogsModel.find({ 'id': req.params.id }, { _id: 0, id: 1, dislikes: 1 }, function (err, logs) {
         if (err) {
           console.log("Error " + err);
         } else {
