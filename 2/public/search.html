@@ -67,11 +67,11 @@
             for (let i = 1; i <= 889; ++i) {
                 
                  await $.ajax({
-                    url: `https://pokeapi.co/api/v2/pokemon/${i}/`, success: function (jsonObj) {
+                    url: `http://localhost:5000/pok/${i}/`, success: function (jsonObj) {
 
 
                         
-                        if ((name === "" || jsonObj.name === name) && (species === "" || jsonObj.species.name === species)) {
+                        if ((name === "" || jsonObj.name === name) && (species === "" || jsonObj.species === species)) {
 
                             for (let j = 0; j < jsonObj.types.length && type != ""; ++j) {
                                 if (jsonObj.types[j].type.name === type) {

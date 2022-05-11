@@ -134,7 +134,7 @@ app.get('/pok/:id', function (req, res) {
     if (err) {
       console.log("Error " + err);
     } else {
-      res.json(poks);
+      res.json(poks[0]);
     }
   });
 })
