@@ -23,7 +23,7 @@
             const h1 = document.createElement("h1");
 
             div.className = "grid-item";
-            img.src = properties.sprites.front_default;
+            img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${properties.id}.png`
             h1.textContent = properties.name;
             a.href = `profile/${properties.id}`;
 
@@ -69,12 +69,14 @@
                  await $.ajax({
                     url: `http://localhost:5000/pok/${i}/`, success: function (jsonObj) {
 
+                        
+
 
                         
                         if ((name === "" || jsonObj.name === name) && (species === "" || jsonObj.species === species)) {
 
-                            for (let j = 0; j < jsonObj.types.length && type != ""; ++j) {
-                                if (jsonObj.types[j].type.name === type) {
+                            for (let j = 0; j < jsonObj.type.length && type != ""; ++j) {
+                                if (jsonObj.type[j] === type) {
                                     appendPok(jsonObj);
                                 }
                             }

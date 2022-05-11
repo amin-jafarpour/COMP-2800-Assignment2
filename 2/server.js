@@ -9,6 +9,8 @@ app.use(express.static('./public'));
 app.use(bodyparser.urlencoded({
   extended: true
 }));
+const cors = require('cors');
+app.use(cors());
 
 
 mongoose.connect("mongodb://localhost:27017/log",
@@ -125,12 +127,13 @@ const pokSchema = new mongoose.Schema({
   "name": String,
   "weight": Number,
   "height": Number,
-  "species": String
+  "species": String,
+  "type": Array
 });
 const poksModel = mongoose.model("poks", pokSchema);
 
 app.get('/pok/:id', function (req, res) {
-  poksModel.find({ id: req.params.id }, { _id: 0, id: 1, name: 1, weight: 1, height: 1, species: 1 }, function (err, poks) {
+  poksModel.find({ id: req.params.id }, { _id: 0, id: 1, name: 1, weight: 1, height: 1, species: 1, type: 1}, function (err, poks) {
     if (err) {
       console.log("Error " + err);
     } else {
@@ -155,6 +158,73 @@ app.get('/profile/:id', function (req, res) {
       });
     }
   });
+});
+
+
+function remove(){
+  poklogsModel.remove({},function (err, data) {
+    if (err) {
+      console.log("Error " + err);
+    } else {
+        console.log('Removed all poks from db');
+    }
+  });
+
+   poksModel.remove({},function (err, data) {
+    if (err) {
+      console.log("Error " + err);
+    } else {
+        console.log('Removed all poks from db');
+    }
+  });
+}
+
+
+
+ app.get('/reload', function (req, res) {
+   remove();
+   for (let i = 1; i <= 30; ++i) {
+    https.get(`https://pokeapi.co/api/v2/pokemon/${i}`, (resp) => {
+      let data = '';
+
+      // A chunk of data has been received.
+      resp.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      // The whole response has been received. Print out the result.
+      resp.on('end', () => {
+        let properties = JSON.parse(data);
+        let poktypes = [];
+
+        for(let i = 0; i < properties.types.length; ++i){
+          poktypes.push(properties.types[i].type.name);
+        }
+        poksModel.create({
+          "id": parseInt(properties.id),
+          "name": properties.name,
+          "weight": parseInt(properties.weight),
+          "height": parseInt(properties.height),
+          "species": properties.species.name,
+          "type": poktypes
+        }/*, function (err, data) {}*/);
+
+
+        poklogsModel.create({
+          "id": parseInt(properties.id),
+          likes: 0,
+          dislikes: 0
+        });
+
+       
+      });
+
+    }).on("error", (err) => {
+      console.log("Error: " + err.message);
+    })
+  }
+
+  res.send('reloaded DB');
 });
 
 

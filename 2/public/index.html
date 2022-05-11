@@ -29,8 +29,10 @@
         }
 
         function getPok() {
-            const maxPokID = 889;
-            const randomPokID = Math.floor(Math.random() * 100);
+            const max = 30;
+            const min = 1;
+            //const randomPokID = Math.floor(Math.random() * 10);
+            const randomPokID = Math.floor(Math.random() * (max - min + 1)) + min;
 
             $.ajax({
                 url: `http://localhost:5000/pok/${randomPokID}/`, success: function (jsonObj) {
