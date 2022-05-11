@@ -43,9 +43,9 @@
             try {
                 await $.ajax({
                     type: "GET",
-                    url: `http://localhost:5000/log/like/<%= id %>`,
+                    url: `http://localhost:5000/log/like/${$('#pokid').text()}`,
                     success: function (data) {
-                        console.log("likes: ", data);
+                        $('#numLikes').text(data[0].likes);
 
                     }
                 })
@@ -59,9 +59,9 @@
             try {
                 await $.ajax({
                     type: "GET",
-                    url: `http://localhost:5000/log/dislike/<%= id %>`,
+                    url: `http://localhost:5000/log/dislike/${$('#pokid').text()}`,
                     success: function (data) {
-                        console.log("dislikes: ", data);
+                        $('#numDislikes').text(data[0].dislikes);
                     }
                 })
             } catch (error) {
@@ -69,9 +69,18 @@
             }
         }
 
-        window.onload = function () {
-            likes();
-            dislikes();
+        window.onload = async function () {
+
+             await $.ajax({
+                    type: "GET",//http://localhost:5000/log/poklogs/10
+                    url: `http://localhost:5000/log/poklogs/${$('#pokid').text()}`,
+                    success: function (data) {
+                        $('#numLikes').text(data[0].likes);
+                        $('#numDislikes').text(data[0].dislikes);
+                        console.log(data);
+                    }
+                })
+            
         }
     </script>
 </head>
@@ -103,14 +112,16 @@
     </div>
 
     <div>
-        <label>Like</label>
-        <input type="button" onclick="">
+        <label>Like</label><p id="numLikes"></p>
+        <input type="button" onclick="likes()" value="like">
 
         <br>
 
-        <label>Dislike</label>
-        <input type="button" onclick="">
+        <label>Dislike</label><p id="numDislikes"></p>
+        <input type="button" onclick="dislikes()" value="dislike">
     </div>
+
+    <p id="pokid" ><%= id %></p>
 
 </body>
 
