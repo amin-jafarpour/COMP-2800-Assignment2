@@ -133,7 +133,7 @@ const pokSchema = new mongoose.Schema({
 const poksModel = mongoose.model("poks", pokSchema);
 
 app.get('/pok/:id', function (req, res) {
-  poksModel.find({ id: req.params.id }, { _id: 0, id: 1, name: 1, weight: 1, height: 1, species: 1, type: 1}, function (err, poks) {
+  poksModel.find({ id: req.params.id }, { _id: 0, id: 1, name: 1, weight: 1, height: 1, species: 1, type: 1 }, function (err, poks) {
     if (err) {
       console.log("Error " + err);
     } else {
@@ -163,33 +163,33 @@ app.get('/profile/:id', function (req, res) {
 
 
 
-function removePokLogs(){
-  poklogsModel.remove({},function (err, data) {
+function removePokLogs() {
+  poklogsModel.remove({}, function (err, data) {
     if (err) {
       console.log("Error " + err);
     } else {
-        console.log('Removed all poks from db');
+      console.log('Removed all poks from db');
     }
   });
 
 }
 
-function removePoks(){
-  poksModel.remove({},function (err, data) {
+function removePoks() {
+  poksModel.remove({}, function (err, data) {
     if (err) {
       console.log("Error " + err);
     } else {
-        console.log('Removed all poks from db');
+      console.log('Removed all poks from db');
     }
   });
 }
 
 
- function remove(){
+function remove() {
   poklogsModel.count({}, function (err, count) {
     if (err) {
       console.log("Error " + err);
-    } else if(count != 0) {
+    } else if (count != 0) {
       removePokLogs();
     }
 
@@ -199,52 +199,39 @@ function removePoks(){
   poksModel.count({}, function (err, count) {
     if (err) {
       console.log("Error " + err);
-    } else if(count != 0) {
+    } else if (count != 0) {
       removePoks();
     }
 
   });
-  
+
 }
 
-let condition = true
-
- app.get('/reload', function (req, res) {
-   
- 
-
-     remove();
-   for (let i = 1; i <= 30; ++i) {
+function populateDB() {
+  remove();
+  for (let i = 1; i <= 40; ++i) {
     https.get(`https://pokeapi.co/api/v2/pokemon/${i}`, (resp) => {
       let data = '';
 
-      // A chunk of data has been received.
+      
       resp.on('data', (chunk) => {
         data += chunk;
       });
 
-      // The whole response has been received. Print out the result.
+     
       resp.on('end', () => {
         let properties = JSON.parse(data);
         let poktypes = [];
 
-        for(let i = 0; i < properties.types.length; ++i){
+        for (let i = 0; i < properties.types.length; ++i) {
           poktypes.push(properties.types[i].type.name);
         }
-        // poksModel.create({
-        //   "id": parseInt(properties.id),
-        //   "name": properties.name,
-        //   "weight": parseInt(properties.weight),
-        //   "height": parseInt(properties.height),
-        //   "species": properties.species.name,
-        //   "type": poktypes
-        // });
+       
 
-
-        poksModel.count({"id": parseInt(properties.id)}, function (err, count) {
+        poksModel.count({ "id": parseInt(properties.id) }, function (err, count) {
           if (err) {
             console.log("Error " + err);
-          } else if(count == 0) {
+          } else if (count == 0) {
             poksModel.create({
               "id": parseInt(properties.id),
               "name": properties.name,
@@ -254,23 +241,12 @@ let condition = true
               "type": poktypes
             });
           }
-      
+
         });
-
-
-
-
-        // poklogsModel.create({
-        //   "id": parseInt(properties.id),
-        //   likes: 0,
-        //   dislikes: 0
-        // });
-
-
-        poksModel.count({"id": parseInt(properties.id)}, function (err, count) {
+        poksModel.count({ "id": parseInt(properties.id) }, function (err, count) {
           if (err) {
             console.log("Error " + err);
-          } else if(count == 0) {
+          } else if (count == 0) {
             console.log('count: ', count);
             poklogsModel.create({
               "id": parseInt(properties.id),
@@ -278,7 +254,7 @@ let condition = true
               dislikes: 0
             });
           }
-      
+
         });
       });
 
@@ -287,14 +263,96 @@ let condition = true
     })
   }
 
+}
+
+populateDB();
+
+// app.get('/reload', function (req, res) {
+
+
+
+//   remove();
+//   for (let i = 1; i <= 30; ++i) {
+//     https.get(`https://pokeapi.co/api/v2/pokemon/${i}`, (resp) => {
+//       let data = '';
+
+//       // A chunk of data has been received.
+//       resp.on('data', (chunk) => {
+//         data += chunk;
+//       });
+
+//       // The whole response has been received. Print out the result.
+//       resp.on('end', () => {
+//         let properties = JSON.parse(data);
+//         let poktypes = [];
+
+//         for (let i = 0; i < properties.types.length; ++i) {
+//           poktypes.push(properties.types[i].type.name);
+//         }
+//         // poksModel.create({
+//         //   "id": parseInt(properties.id),
+//         //   "name": properties.name,
+//         //   "weight": parseInt(properties.weight),
+//         //   "height": parseInt(properties.height),
+//         //   "species": properties.species.name,
+//         //   "type": poktypes
+//         // });
+
+
+//         poksModel.count({ "id": parseInt(properties.id) }, function (err, count) {
+//           if (err) {
+//             console.log("Error " + err);
+//           } else if (count == 0) {
+//             poksModel.create({
+//               "id": parseInt(properties.id),
+//               "name": properties.name,
+//               "weight": parseInt(properties.weight),
+//               "height": parseInt(properties.height),
+//               "species": properties.species.name,
+//               "type": poktypes
+//             });
+//           }
+
+//         });
+
+
+
+
+//         // poklogsModel.create({
+//         //   "id": parseInt(properties.id),
+//         //   likes: 0,
+//         //   dislikes: 0
+//         // });
+
+
+//         poksModel.count({ "id": parseInt(properties.id) }, function (err, count) {
+//           if (err) {
+//             console.log("Error " + err);
+//           } else if (count == 0) {
+//             console.log('count: ', count);
+//             poklogsModel.create({
+//               "id": parseInt(properties.id),
+//               likes: 0,
+//               dislikes: 0
+//             });
+//           }
+
+//         });
+//       });
+
+//     }).on("error", (err) => {
+//       console.log("Error: " + err.message);
+//     })
+//   }
 
 
 
 
 
 
-  res.json({"bad": "good"});
-});
+
+//   res.json({ "bad": "good" });
+// });
 
 
 

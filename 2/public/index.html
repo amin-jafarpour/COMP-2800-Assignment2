@@ -10,17 +10,17 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
 
-        async function loadPok() {
-            try {
-                await $.ajax({
-                    type: "GET",
-                    url: `http://localhost:5000/reload`,
-                    success: (data) => console.log('poks reloaded to DB: ', data)
-                })
-            } catch (e) {
-                console.log(e);
-            }    
-        }
+        // async function loadPok() {
+        //     try {
+        //         await $.ajax({
+        //             type: "GET",
+        //             url: `http://localhost:5000/reload`,
+        //             success: (data) => console.log('poks reloaded to DB: ', data)
+        //         })
+        //     } catch (e) {
+        //         console.log(e);
+        //     }    
+        // }
 
         function appendPok(properties) {
 
@@ -92,8 +92,8 @@
                 Settings
             </a>
 
-            <a onclick="loadPok()">
-                Reload DB
+            <a href="">
+                Settings2
             </a>
 
             <a href="./search.html" style="float: right; margin-right: 10px;" id="search-link">
