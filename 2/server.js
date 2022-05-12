@@ -168,7 +168,7 @@ function removePokLogs() {
     if (err) {
       console.log("Error " + err);
     } else {
-      console.log('Removed all poks from db');
+      console.log('Removed all pok logs from db');
     }
   });
 
@@ -247,7 +247,6 @@ function populateDB() {
           if (err) {
             console.log("Error " + err);
           } else if (count == 0) {
-            console.log('count: ', count);
             poklogsModel.create({
               "id": parseInt(properties.id),
               likes: 0,
