@@ -64,7 +64,7 @@
                 nameError.innerHTML = "";
             }
             console.log("name:", name, "species:", species, "Type:", type);
-            for (let i = 1; i <= 889; ++i) {
+            for (let i = 1; i <= 30; ++i) {
                 
                  await $.ajax({
                     url: `http://localhost:5000/pok/${i}/`, success: function (jsonObj) {
