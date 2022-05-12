@@ -161,7 +161,9 @@ app.get('/profile/:id', function (req, res) {
 });
 
 
-function remove(){
+
+
+function removePokLogs(){
   poklogsModel.remove({},function (err, data) {
     if (err) {
       console.log("Error " + err);
@@ -170,7 +172,10 @@ function remove(){
     }
   });
 
-   poksModel.remove({},function (err, data) {
+}
+
+function removePoks(){
+  poksModel.remove({},function (err, data) {
     if (err) {
       console.log("Error " + err);
     } else {
@@ -180,9 +185,35 @@ function remove(){
 }
 
 
+ function remove(){
+  poklogsModel.count({}, function (err, count) {
+    if (err) {
+      console.log("Error " + err);
+    } else if(count != 0) {
+      removePokLogs();
+    }
+
+  });
+
+
+  poksModel.count({}, function (err, count) {
+    if (err) {
+      console.log("Error " + err);
+    } else if(count != 0) {
+      removePoks();
+    }
+
+  });
+  
+}
+
+let condition = true
 
  app.get('/reload', function (req, res) {
-   remove();
+   
+ 
+
+     remove();
    for (let i = 1; i <= 30; ++i) {
     https.get(`https://pokeapi.co/api/v2/pokemon/${i}`, (resp) => {
       let data = '';
@@ -200,23 +231,55 @@ function remove(){
         for(let i = 0; i < properties.types.length; ++i){
           poktypes.push(properties.types[i].type.name);
         }
-        poksModel.create({
-          "id": parseInt(properties.id),
-          "name": properties.name,
-          "weight": parseInt(properties.weight),
-          "height": parseInt(properties.height),
-          "species": properties.species.name,
-          "type": poktypes
-        }/*, function (err, data) {}*/);
+        // poksModel.create({
+        //   "id": parseInt(properties.id),
+        //   "name": properties.name,
+        //   "weight": parseInt(properties.weight),
+        //   "height": parseInt(properties.height),
+        //   "species": properties.species.name,
+        //   "type": poktypes
+        // });
 
 
-        poklogsModel.create({
-          "id": parseInt(properties.id),
-          likes: 0,
-          dislikes: 0
+        poksModel.count({"id": parseInt(properties.id)}, function (err, count) {
+          if (err) {
+            console.log("Error " + err);
+          } else if(count == 0) {
+            poksModel.create({
+              "id": parseInt(properties.id),
+              "name": properties.name,
+              "weight": parseInt(properties.weight),
+              "height": parseInt(properties.height),
+              "species": properties.species.name,
+              "type": poktypes
+            });
+          }
+      
         });
 
-       
+
+
+
+        // poklogsModel.create({
+        //   "id": parseInt(properties.id),
+        //   likes: 0,
+        //   dislikes: 0
+        // });
+
+
+        poksModel.count({"id": parseInt(properties.id)}, function (err, count) {
+          if (err) {
+            console.log("Error " + err);
+          } else if(count == 0) {
+            console.log('count: ', count);
+            poklogsModel.create({
+              "id": parseInt(properties.id),
+              likes: 0,
+              dislikes: 0
+            });
+          }
+      
+        });
       });
 
     }).on("error", (err) => {
@@ -224,7 +287,13 @@ function remove(){
     })
   }
 
-  res.send('reloaded DB');
+
+
+
+
+
+
+  res.json({"bad": "good"});
 });
 
 
